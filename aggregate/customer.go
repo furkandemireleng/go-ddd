@@ -51,3 +51,38 @@ func NewCustomer(name string, age int) (Customer, error) {
 	}, nil
 
 }
+
+func (c *Customer) GetId() uuid.UUID {
+	return c.person.ID
+}
+
+func (c *Customer) GetName() string {
+	return c.person.Name
+}
+
+func (c *Customer) GetAge() int {
+	return c.person.Age
+}
+func (c *Customer) GetTransactions() []valueobject.Transaction {
+	return c.transactions
+}
+
+func (c *Customer) GetProducts() []*entity.Item {
+	return c.products
+}
+
+func (c *Customer) SetID(id uuid.UUID) {
+	if c.person == nil {
+		c.person = &entity.Person{}
+	}
+	c.person.ID = id
+}
+
+func (c *Customer) SetName(name string) error {
+	if c.person == nil {
+		return errors.New("Customer has not been set")
+	}
+	c.person.Name = name
+
+	return nil
+}
