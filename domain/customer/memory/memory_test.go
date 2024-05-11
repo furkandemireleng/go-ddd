@@ -3,7 +3,7 @@ package memory
 import (
 	"errors"
 	"github.com/furkandemireleng/go-ddd/aggregate"
-	customer2 "github.com/furkandemireleng/go-ddd/domain/customer"
+	customer "github.com/furkandemireleng/go-ddd/domain/customer"
 	"github.com/google/uuid"
 	"testing"
 )
@@ -16,15 +16,15 @@ func TestMemoryRepository_Get(t *testing.T) {
 		expectedErr error
 	}
 
-	customer, err := aggregate.NewCustomer("Furkan", 12)
+	cust, err := aggregate.NewCustomer("Furkan", 12)
 	if err != nil {
 		t.Fatal(err)
 	}
-	id := customer.GetId()
+	id := cust.GetId()
 
 	repo := MemoryRepository{
 		customers: map[uuid.UUID]aggregate.Customer{
-			id: customer,
+			id: cust,
 		},
 	}
 
@@ -33,7 +33,7 @@ func TestMemoryRepository_Get(t *testing.T) {
 			name:        "no customer by id",
 			age:         12,
 			id:          uuid.MustParse("7f397108-ae35-4918-9245-08a12141fe30"),
-			expectedErr: customer2.ErrCustomerNotFound,
+			expectedErr: customer.ErrCustomerNotFound,
 		},
 		{
 			name:        "customer by id",
