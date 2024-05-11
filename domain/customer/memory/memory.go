@@ -2,6 +2,7 @@ package memory
 
 import (
 	"github.com/furkandemireleng/go-ddd/aggregate"
+	"github.com/furkandemireleng/go-ddd/domain/customer"
 	"github.com/google/uuid"
 	"sync"
 )
@@ -22,17 +23,36 @@ func New() *MemoryRepository {
 }
 
 func (mr *MemoryRepository) Get(id uuid.UUID) (aggregate.Customer, error) {
-	return aggregate.Customer{}, nil
+	if customer, ok := mr.customers[id]; ok {
+		return customer, nil
+	}
+	return aggregate.Customer{}, customer.ErrCustomerNotFound
 }
 
-func (mr *MemoryRepository) Add(aggregate.Customer) error {
+func (mr *MemoryRepository) Update(c aggregate.Customer) error {
+	if _, ok := mr.customers[c.GetId()]; !ok {
+		return customer.ErrCustomerNotFound
+	}
+
+	// update the customer
+
+	mr.Lock()
+	mr.customers[c.GetId()] = c
+	mr.Unlock()
+
 	return nil
 }
 
-func (mr *MemoryRepository) Update(aggregate.Customer) error {
-	return nil
-}
+func (mr *MemoryRepository) Delete(id uuid.UUID) error {
+	mr.Lock()
 
-func (mr *MemoryRepository) Delete(uuid2 uuid.UUID) error {
+	if _, ok := mr.customers[id]; !ok {
+		return customer.ErrCustomerNotFound
+	}
+
+	delete(mr.customers, id)
+
+	mr.Unlock()
+
 	return nil
 }
