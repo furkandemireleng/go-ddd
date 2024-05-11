@@ -26,7 +26,7 @@ func NewOrderService(cfgs ...OrderConfiguration) (*OrderService, error) {
 	return os, nil
 }
 
-// with customer repository applies a customer repository to the order service
+// with customer repository.go applies a customer repository.go to the order service
 
 func WithCustomerRepository(cr customer.CustomerRepositoty) OrderConfiguration {
 	return func(os *OrderService) error {

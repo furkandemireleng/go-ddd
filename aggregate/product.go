@@ -3,14 +3,13 @@ package aggregate
 import (
 	"errors"
 	"github.com/furkandemireleng/go-ddd/entity"
+	"github.com/google/uuid"
 )
 
 type Product struct {
-	item        *entity.Item
-	name        string
-	description string
-	price       float64
-	quantity    int
+	item     *entity.Item
+	price    float64
+	quantity int
 }
 
 var (
@@ -37,4 +36,29 @@ func NewProduct(name string, description string, price float64, quantity int) (P
 		return Product{}, ErrMissingQuantity
 	}
 
+	return Product{
+		item: &entity.Item{
+			ID:          uuid.New(),
+			Name:        name,
+			Description: description,
+		},
+		price:    price,
+		quantity: quantity,
+	}, nil
+}
+
+func (p Product) GetId() uuid.UUID {
+	return p.item.ID
+}
+func (p Product) GetName() string {
+	return p.item.Name
+}
+func (p Product) GetPrice() float64 {
+	return p.price
+}
+func (p Product) GetQuantity() int {
+	return p.quantity
+}
+func (p Product) GetItem() *entity.Item {
+	return p.item
 }
