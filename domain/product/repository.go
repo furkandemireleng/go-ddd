@@ -1,8 +1,14 @@
 package product
 
 import (
+	"errors"
 	"github.com/furkandemireleng/go-ddd/aggregate"
 	"github.com/google/uuid"
+)
+
+var (
+	ErrProductNotFound      = errors.New("product not found")
+	ErrProductAlreadyExists = errors.New("product already exists")
 )
 
 type ProductRepository interface {
