@@ -35,41 +35,41 @@ func (mpr *MemoryProductRepository) GetByID(id uuid.UUID) (aggregate.Product, er
 	return product, nil
 }
 
-func (mpr *MemoryProductRepository) Add(product aggregate.Product) error {
+func (mpr *MemoryProductRepository) Add(p aggregate.Product) error {
 	mpr.Lock()
 	defer mpr.Unlock()
 
-	if _, ok := mpr.products[product.GetId()]; ok {
+	if _, ok := mpr.products[p.GetId()]; ok {
 		return product2.ErrProductAlreadyExists
 	}
-	mpr.products[product.GetId()] = product
+	mpr.products[p.GetId()] = p
 
 	return nil
 
 }
 
-func (mpr *MemoryProductRepository) Update(product aggregate.Product) error {
+func (mpr *MemoryProductRepository) Update(updatedProduct aggregate.Product) error {
 	mpr.Lock()
 	defer mpr.Unlock()
 
-	if _, ok := mpr.products[product.GetId()]; !ok {
+	if _, ok := mpr.products[updatedProduct.GetId()]; !ok {
 		return product2.ErrProductNotFound
 	}
 
-	mpr.products[product.GetId()] = product
+	mpr.products[updatedProduct.GetId()] = updatedProduct
 	return nil
 
 }
 
-func (mpr *MemoryProductRepository) Delete(product aggregate.Product) error {
+func (mpr *MemoryProductRepository) Delete(id uuid.UUID) error {
 	mpr.Lock()
 	defer mpr.Unlock()
 
-	if _, ok := mpr.products[product.GetId()]; !ok {
+	if _, ok := mpr.products[id]; !ok {
 		return product2.ErrProductNotFound
 	}
 
-	delete(mpr.products, product.GetId())
+	delete(mpr.products, id)
 
 	return nil
 

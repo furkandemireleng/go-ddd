@@ -50,8 +50,8 @@ func WithMemoryProductRepository(products []aggregate.Product) OrderConfiguratio
 	return func(os *OrderService) error {
 		pr := prodmemory.New()
 
-		for _, p := range products {
-			if err := pr.Add(p); err != nil {
+		for _, product := range products {
+			if err := pr.Add(product); err != nil {
 				return nil
 			}
 		}

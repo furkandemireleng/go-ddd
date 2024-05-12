@@ -14,7 +14,7 @@ var (
 type ProductRepository interface {
 	GetAll() ([]aggregate.Product, error)
 	GetByID(id uuid.UUID) (aggregate.Product, error)
-	Add(p aggregate.Product) (aggregate.Product, error)
-	Update(p aggregate.Product) (aggregate.Product, error)
+	Add(product aggregate.Product) error
+	Update(product aggregate.Product) error
 	Delete(id uuid.UUID) error
 }

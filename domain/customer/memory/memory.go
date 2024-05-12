@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-// package memory is a  n in-memory implementation of customer repository.go
+// package memory is an  in in-memory implementation of customer repository.go
 
 type MemoryRepository struct {
 	customers map[uuid.UUID]aggregate.Customer
