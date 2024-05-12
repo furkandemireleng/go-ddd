@@ -12,7 +12,7 @@ type MemoryProductRepository struct {
 	sync.Mutex
 }
 
-func NewMemoryProductRepository() *MemoryProductRepository {
+func New() *MemoryProductRepository {
 	return &MemoryProductRepository{
 		products: make(map[uuid.UUID]aggregate.Product),
 	}

@@ -2,15 +2,20 @@ package services
 
 import (
 	"fmt"
+	"github.com/furkandemireleng/go-ddd/aggregate"
 	"github.com/furkandemireleng/go-ddd/domain/customer"
+	"github.com/furkandemireleng/go-ddd/domain/customer/memory"
+	"github.com/furkandemireleng/go-ddd/domain/product"
+	prodmemory "github.com/furkandemireleng/go-ddd/domain/product/memory"
 	"github.com/google/uuid"
 )
 
+type OrderConfiguration func(os *OrderService) error
+
 type OrderService struct {
 	customers customer.CustomerRepositoty
+	products  product.ProductRepository
 }
-
-type OrderConfiguration func(os *OrderService) error
 
 func NewOrderService(cfgs ...OrderConfiguration) (*OrderService, error) {
 	os := &OrderService{}
@@ -35,11 +40,27 @@ func WithCustomerRepository(cr customer.CustomerRepositoty) OrderConfiguration {
 	}
 }
 
-//func WithMemoryCustomerRepository() OrderConfiguration {
-//	cr := memory.New()
-//	return WithCustomerRepository(cr)
-//
-//}
+func WithMemoryCustomerRepository() OrderConfiguration {
+	cr := memory.New()
+	return WithCustomerRepository(cr)
+
+}
+
+func WithMemoryProductRepository(products []aggregate.Product) OrderConfiguration {
+	return func(os *OrderService) error {
+		pr := prodmemory.New()
+
+		for _, p := range products {
+			if err := pr.Add(p); err != nil {
+				return nil
+			}
+		}
+
+		os.products = pr
+		return nil
+	}
+
+}
 
 func (o *OrderService) CreateOrder(customerId uuid.UUID, productIds []uuid.UUID) error {
 	// fetch the customer
@@ -48,6 +69,21 @@ func (o *OrderService) CreateOrder(customerId uuid.UUID, productIds []uuid.UUID)
 		return err
 	}
 	fmt.Println(c)
+	//get each product
+
+	var productsArray []aggregate.Product
+	var totalPrice float64
+
+	for _, id := range productIds {
+		p, err := o.products.GetByID(id)
+
+		if err != nil {
+			return err
+		}
+
+		productsArray = append(productsArray, p)
+		totalPrice += p.GetPrice()
+	}
 
 	return nil
 }
