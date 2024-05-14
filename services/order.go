@@ -1,10 +1,12 @@
 package services
 
 import (
+	"context"
 	"fmt"
 	"github.com/furkandemireleng/go-ddd/aggregate"
 	"github.com/furkandemireleng/go-ddd/domain/customer"
 	"github.com/furkandemireleng/go-ddd/domain/customer/memory"
+	"github.com/furkandemireleng/go-ddd/domain/customer/mongo"
 	"github.com/furkandemireleng/go-ddd/domain/product"
 	prodmemory "github.com/furkandemireleng/go-ddd/domain/product/memory"
 	"github.com/google/uuid"
@@ -43,6 +45,16 @@ func WithCustomerRepository(cr customer.CustomerRepositoty) OrderConfiguration {
 func WithMemoryCustomerRepository() OrderConfiguration {
 	cr := memory.New()
 	return WithCustomerRepository(cr)
+}
+func WithMongoCustomerRepository(ctx context.Context, connectionString string) OrderConfiguration {
+	return func(os *OrderService) error {
+		cr, err := mongo.New(ctx, connectionString)
+		if err != nil {
+			panic(err)
+		}
+		os.customers = cr
+		return nil
+	}
 
 }
 

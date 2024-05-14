@@ -54,10 +54,10 @@ func New(ctx context.Context, connectionString string) (*MongoRepository, error)
 
 }
 
-func (mr *MongoRepository) FindCustomerByID(id uuid.UUID) (aggregate.Customer, error) {
+func (mr *MongoRepository) Get(uuid uuid.UUID) (aggregate.Customer, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	result := mr.customer.FindOne(ctx, bson.M{"id": id})
+	result := mr.customer.FindOne(ctx, bson.M{"id": uuid})
 
 	var customer MongoCustomer
 	err := result.Decode(&customer)
@@ -68,7 +68,7 @@ func (mr *MongoRepository) FindCustomerByID(id uuid.UUID) (aggregate.Customer, e
 	return customer.ToAggregate(), nil
 
 }
-func (mr *MongoRepository) AddCustomer(c aggregate.Customer) error {
+func (mr *MongoRepository) Add(c aggregate.Customer) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -80,9 +80,14 @@ func (mr *MongoRepository) AddCustomer(c aggregate.Customer) error {
 	}
 	return nil
 }
-func (mr *MongoRepository) UpdateCustomer(c aggregate.Customer) error {
+func (mr *MongoRepository) Update(c aggregate.Customer) error {
 	//ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	//defer cancel()
+	panic("implement me")
+
+}
+
+func (mr *MongoRepository) Delete(uuid uuid.UUID) error {
 	panic("implement me")
 
 }
